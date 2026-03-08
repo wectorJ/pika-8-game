@@ -1,3 +1,4 @@
-/build
+build/
+.vscode/
 
 pika-8.exe
