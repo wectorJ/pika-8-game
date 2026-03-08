@@ -5,7 +5,6 @@ project(pika-8-game
     LANGUAGES C CXX)
 
 # Project metadata
-set(PROJECT_AUTHOR "wectorJ")
 set(PROJECT_LICENSE "MIT")
 
 # exe will be created in the project root
