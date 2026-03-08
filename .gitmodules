@@ -1,0 +1,3 @@
+[submodule "pika-8-engine"]
+	path = pika-8-engine
+	url = https://github.com/GarniyHlopchik/pika-8.git
