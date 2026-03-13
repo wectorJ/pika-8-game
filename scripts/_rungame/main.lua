@@ -79,16 +79,16 @@ function _update(delta)
     -- player movement
     local dir = Vec2.ZERO:copy()
 
-    if Input.btnp(262) or Input.btnp(68) then
+    if Input.btnp(79) or Input.btnp(68) then
         dir = dir + Vec2.RIGHT
     end
-    if Input.btnp(263) or Input.btnp(65) then
+    if Input.btnp(80) or Input.btnp(65) then
         dir = dir + Vec2.LEFT
     end
-    if Input.btnp(264) or Input.btnp(83) then
+    if Input.btnp(81) or Input.btnp(83) then
         dir = dir + Vec2.DOWN
     end
-    if Input.btnp(265) or Input.btnp(87) then
+    if Input.btnp(82) or Input.btnp(87) then
         dir = dir + Vec2.UP
     end
     if dir:length_sq() > 0 then 
