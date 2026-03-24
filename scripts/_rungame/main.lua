@@ -16,7 +16,7 @@ function _init()
         GFX.load("assets/sprites/enemies/enemy2.png"),
     }
 
-    generator = EnemySpawner.create_generator(512, 512, enemy_spr) -- screen width, height, enemy sprites
+    generator = EnemySpawner.create_generator(512, 512, enemy_spr)
     spawn_state = EnemySpawner.create_state(8, 1)  -- spawn for X seconds, 1 enemy per N seconds
     enemies_counter = 0
 
@@ -29,13 +29,16 @@ function _init()
     player_speed = 250.0
     enemies = {}
     score = 0
+
+    player = GFX.spr(spr, player_pos.x, player_pos.y, 64,64)
 end
 
 function _update(delta)
     GFX.cls()
 
     GFX.text("Score: "..score, 10, 30, 2, "default", 0.4)
-    GFX.spr(spr, player_pos.x, player_pos.y, 64,64)
+    player:pos(player_pos.x, player_pos.y)
+    player:draw()
 
     local x, y, sprite = EnemySpawner.spawn_for_duration(generator, spawn_state, delta)
     if x then
@@ -49,7 +52,8 @@ function _update(delta)
         local enemy = enemies[i]
         enemy:update(delta)
         enemy:draw()
-        -- Remove if off screen
+
+        --TODO change death condition
         if enemy.y > 512 then
             enemy.alive = false
         end
@@ -79,16 +83,16 @@ function _update(delta)
     -- player movement
     local dir = Vec2.ZERO:copy()
 
-    if Input.btnp(79) or Input.btnp(68) then
+    if Input.btnp(79) or Input.btnp(7) then
         dir = dir + Vec2.RIGHT
     end
-    if Input.btnp(80) or Input.btnp(65) then
+    if Input.btnp(80) or Input.btnp(4) then
         dir = dir + Vec2.LEFT
     end
-    if Input.btnp(81) or Input.btnp(83) then
+    if Input.btnp(81) or Input.btnp(22) then
         dir = dir + Vec2.DOWN
     end
-    if Input.btnp(82) or Input.btnp(87) then
+    if Input.btnp(82) or Input.btnp(26) then
         dir = dir + Vec2.UP
     end
     if dir:length_sq() > 0 then 

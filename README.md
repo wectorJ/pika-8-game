@@ -38,15 +38,6 @@ If you already cloned the repository without `--recursive`, initialize submodule
 git submodule update --init --recursive
 ```
 
-### Compilation
-
-```bash
-mkdir build
-cd build
-cmake ..
-cmake --build .
-```
-
 ### Running
 
 After building, the executable `pika-8.exe` will be in the project root:

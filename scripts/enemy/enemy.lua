@@ -26,6 +26,7 @@ function Enemy:new(x, y, sprite, width, height, speed)
 
     self.speed = speed or 50
     self.sprite = sprite
+    self.sprite_obj = GFX.spr(self.sprite, self.x, self.y, self.width, self.height)
     self.alive = true
 
     -- State machine
@@ -62,7 +63,8 @@ end
 --- draw enemy
 function Enemy:draw()
     if not self.alive then return end
-    GFX.spr(self.sprite, self.x, self.y, self.width, self.height)
+    self.sprite_obj:pos(self.x, self.y)
+    self.sprite_obj:draw()
 end
 
 --- for debug
