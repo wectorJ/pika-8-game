@@ -1,4 +1,4 @@
-function extend(parent) -- extend (OOP)
+function extend(parent)
     local child = {}
     setmetatable(child,{__index = parent})
     return child
@@ -7,14 +7,13 @@ end
 
 local State = require("scripts.enemy.states.state")
 
--- IddleState extends State
 local IdleState = extend(State)
 IdleState.__index = IdleState
 
 -- constructor
 function IdleState:new()
     local self = State.new(self, "idle")
-    setmetatable(self, IdleState)          -- switch metatable to IdleState
+    setmetatable(self, IdleState)
     return self
 end
 
@@ -24,7 +23,7 @@ function IdleState:enter(enemy)
     enemy.idle_timer = 0
     enemy.base_y = enemy.y -- base_y and timer are bound to an object
     enemy.base_x = enemy.x
-    enemy.rand_direction = math.random() < 0.5 and -1 or 1 -- randomize direction of idle movement
+    enemy.rand_direction = math.random() < 0.5 and -1 or 1
     amplitude = 3
 end
 
@@ -39,8 +38,8 @@ function IdleState:update(enemy, dt)
 end
 
 function IdleState:exit(enemy)
-    enemy.y = enemy.base_y -- reset y position
-    enemy.x = enemy.base_x -- reset x position
+    enemy.y = enemy.base_y
+    enemy.x = enemy.base_x
     print("[IdleState] Enemy left idle")
 end
 

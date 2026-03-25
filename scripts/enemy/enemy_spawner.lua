@@ -7,14 +7,14 @@ local EnemySpawner = {}
 --- @param screen_h number height of the game screen
 --- @param enemy_spr table list of enemy sprite IDs
 function EnemySpawner.create_generator(screen_w, screen_h, enemy_spr)
-    return coroutine.create( -- ~~yield
+    return coroutine.create(
         function()
-            local i = 0 -- iterating sprites
+            local i = 0
             while true do
                 local x = math.random(16, screen_w - 16)
                 local y = math.random(16, screen_h - 16)
                 local sprite = enemy_spr[i % #enemy_spr + 1] --BRAINFUCK lua indexes starts at 1
-                coroutine.yield(x, y, sprite) -- return data
+                coroutine.yield(x, y, sprite)
                 i = i + 1
             end
         end

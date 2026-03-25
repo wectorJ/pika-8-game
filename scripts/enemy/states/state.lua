@@ -1,7 +1,3 @@
--- scripts/enemy/states/state.lua
--- State - abstract class 
--- all states (idle, move, attack) extend this class
-
 local State = {}
 State.__index = State
 
