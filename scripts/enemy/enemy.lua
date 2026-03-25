@@ -1,5 +1,6 @@
 -- scripts/enemy/enemy.lua
 local IdleState = require("scripts.enemy.states.idle")
+local Vec2 = require("scripts.libs.vec2")
 
 -- Class Enemy
 local Enemy = {}
@@ -18,6 +19,8 @@ function Enemy:new(x, y, sprite, width, height, speed)
 
     self.x = x
     self.y = y
+
+    self.target = nil
 
     -- sprite params
     self.width = width or 32

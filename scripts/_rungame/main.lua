@@ -1,5 +1,7 @@
 local Libs = require("scripts.libs.custom_libs")
 local Vec2, Collision, Enemy, EnemySpawner = Libs.Vec2, Libs.Collision, Libs.Enemy, Libs.EnemySpawner
+window_width = 1440
+window_height = 720
 
 function _init()
     spr = GFX.load("assets/sprites/player/player.png")
@@ -9,7 +11,7 @@ function _init()
         GFX.load("assets/sprites/enemies/enemy2.png"),
     }
 
-    generator = EnemySpawner.create_generator(512, 512, enemy_spr)
+    generator = EnemySpawner.create_generator(window_width, window_height, enemy_spr)
     spawn_state = EnemySpawner.create_state(8, 1)  -- spawn for X seconds, 1 enemy per N seconds
     enemies_counter = 0
 
@@ -18,7 +20,7 @@ function _init()
     --sound = SFX.load("assets/sounds/pipe.mp3");
     --SFX.play(sound);
     
-    player_pos = Vec2:new(64, 64)
+    player_pos = Vec2:new(window_width/2, window_height/2)
     player_width = 64
     player_height = 64
     player_speed = 250.0
@@ -38,6 +40,7 @@ function _update(delta)
     local x, y, sprite = EnemySpawner.spawn_for_duration(generator, spawn_state, delta)
     if x then
         local e = Enemy:new(x, y, sprite)
+        e.target = player_pos
         table.insert(enemies, e)
         enemies_counter = enemies_counter + 1
     end
@@ -45,13 +48,14 @@ function _update(delta)
     -- Update enemies
     for i = #enemies, 1, -1 do
         local enemy = enemies[i]
+        enemy.target = player_pos
         enemy:update(delta)
         enemy:draw()
 
         --TODO change death condition
-        if enemy.y > 512 then
-            enemy.alive = false
-        end
+        -- if enemy.y > 512 then
+        --     enemy.alive = false
+        -- end
 
         -- collision with player
         if Collision.rect_collis(player_pos, player_width, player_height, 
@@ -90,7 +94,7 @@ function _update(delta)
     if Input.btnp(82) or Input.btnp(26) then
         dir = dir + Vec2.UP
     end
-    dir = dir:normalize()
+    dir:normalize()
 
     player_pos = player_pos + dir * player_speed * delta
 end

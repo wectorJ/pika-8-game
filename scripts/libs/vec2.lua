@@ -89,14 +89,18 @@ function Vec2:length_sq()
     return self.x * self.x + self.y * self.y
 end
 
----Normalize Vector
----@return Vec2
+---Normalize Vector and return itself
+---@return self
 function Vec2:normalize()
     local len = self:length()
     if len == 0 then
-        return Vec2:new(0, 0)
+        self.x = 0
+        self.y = 0
+    else
+        self.x = self.x / len
+        self.y = self.y / len
     end
-    return self / len
+    return self
 end
 
 ---Dot Product
