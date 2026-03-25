@@ -16,17 +16,15 @@ Enemy.__index = Enemy
 function Enemy:new(x, y, sprite, width, height, speed)
     local self = setmetatable({}, Enemy)
 
-    -- pos
     self.x = x
     self.y = y
 
-    -- sprite size
+    -- sprite params
     self.width = width or 32
     self.height = height or 32
 
     self.speed = speed or 50
-    self.sprite = sprite
-    self.sprite_obj = GFX.spr(self.sprite, self.x, self.y, self.width, self.height)
+    self.sprite_obj = GFX.spr(sprite, self.x, self.y, self.width, self.height)
     self.alive = true
 
     -- State machine
@@ -38,26 +36,19 @@ end
 
 --- switch state
 function Enemy:set_state(new_state)
-    -- exit old state
     if self.state then
         self.state:exit(self)
     end
 
-    -- switch to new state
     self.state = new_state
 
-    -- enter to new state
     self.state:enter(self)
 end
 
---- dt (delta time), every frame
 function Enemy:update(dt)
     if not self.alive then return end
 
-    -- logic to current state
-    if self.state then
-        self.state:update(self, dt)
-    end
+    self.state:update(self, dt)
 end
 
 --- draw enemy

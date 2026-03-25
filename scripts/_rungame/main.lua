@@ -1,9 +1,3 @@
----@diagnostic disable: lowercase-global
---#define KEY_RIGHT 262
---#define KEY_LEFT 263
---#define KEY_DOWN 264
---#define KEY_UP 265
-
 local Enemy = require("scripts.enemy.enemy")
 local EnemySpawner = require("scripts.enemy.enemy_spawner")
 local Vec2 = require("scripts.libs.vec2")
@@ -95,8 +89,7 @@ function _update(delta)
     if Input.btnp(82) or Input.btnp(26) then
         dir = dir + Vec2.UP
     end
-    if dir:length_sq() > 0 then 
-        dir = dir:normalize()
-    end
+    dir = dir:normalize()
+
     player_pos = player_pos + dir * player_speed * delta
 end
