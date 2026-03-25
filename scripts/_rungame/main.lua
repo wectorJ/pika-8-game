@@ -1,6 +1,5 @@
-local Enemy = require("scripts.enemy.enemy")
-local EnemySpawner = require("scripts.enemy.enemy_spawner")
-local Vec2 = require("scripts.libs.vec2")
+local Libs = require("scripts.libs.custom_libs")
+local Vec2, Collision, Enemy, EnemySpawner = Libs.Vec2, Libs.Collision, Libs.Enemy, Libs.EnemySpawner
 
 function _init()
     spr = GFX.load("assets/sprites/player/player.png")
@@ -20,11 +19,13 @@ function _init()
     --SFX.play(sound);
     
     player_pos = Vec2:new(64, 64)
+    player_width = 64
+    player_height = 64
     player_speed = 250.0
     enemies = {}
     score = 0
 
-    player = GFX.spr(spr, player_pos.x, player_pos.y, 64,64)
+    player = GFX.spr(spr, player_pos.x, player_pos.y, player_width, player_height)
 end
 
 function _update(delta)
@@ -52,9 +53,9 @@ function _update(delta)
             enemy.alive = false
         end
 
-        -- collision whith player
-        if player_pos.x < enemy.x + enemy.width and player_pos.x + 64 > enemy.x
-            and player_pos.y < enemy.y + enemy.height and player_pos.y + 64 > enemy.y then
+        -- collision with player
+        if Collision.rect_collis(player_pos, player_width, player_height, 
+        Vec2:new(enemy.x, enemy.y), enemy.width, enemy.height) then
             print("Hit!")
             score = score + 1
             enemy.alive = false
