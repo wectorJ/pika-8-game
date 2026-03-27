@@ -1,6 +1,6 @@
 -- scripts/enemy/enemy.lua
-local IdleState = require("scripts.enemy.states.idle")
-local Vec2 = require("scripts.libs.vec2")
+local IdleState = require("scripts._src.enemy.states.idle")
+local Vec2 = require("scripts.custom_libs.vec2")
 
 -- Class Enemy
 local Enemy = {}

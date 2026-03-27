@@ -19,7 +19,7 @@ Vec2
 ├── Geometry
 │   ├── :length()         → number      -- length (modulus)
 │   ├── :length_sq()      → number      -- length² (without sqrt, for comparisons)
-│   ├── :normalize()      → Vec2        -- unit vector (new)
+│   ├── :normalize()      → self        -- unit vector (modify self)
 │   ├── :dot(other)       → number      -- dot product
 │   ├── :cross(other)     → number      -- "z" pseudo-cross in 2D
 │   ├── :distance(other)  → number      -- distance to another vector

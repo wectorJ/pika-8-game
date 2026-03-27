@@ -1,6 +1,6 @@
-local State = require("scripts.enemy.states._state")
-local Collision = require("scripts.libs.collisions")
-local Vec2 = require("scripts.libs.vec2")
+local State = require("scripts._src.enemy.states._state")
+local Collision = require("scripts.custom_libs.collisions")
+local Vec2 = require("scripts.custom_libs.vec2")
 
 function extend(parent)
     local child = {}
@@ -34,7 +34,7 @@ function ChaseState:update(enemy, dt)
         enemy.x = enemy.x + dir.x * enemy.speed * dt
         enemy.y = enemy.y + dir.y * enemy.speed * dt
     else
-        enemy:set_state(require("scripts.enemy.states.idle"):new())
+        enemy:set_state(require("scripts._src.enemy.states.idle"):new())
     end
 end
 

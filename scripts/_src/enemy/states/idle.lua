@@ -5,8 +5,8 @@ function extend(parent)
 end
 
 
-local State = require("scripts.enemy.states._state")
-local Vec2 = require("scripts.libs.vec2")
+local State = require("scripts._src.enemy.states._state")
+local Vec2 = require("scripts.custom_libs.vec2")
 
 local IdleState = extend(State)
 IdleState.__index = IdleState
@@ -36,7 +36,7 @@ function IdleState:update(enemy, dt)
     if enemy.target then
         local dir = Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y)
         if dir:length() < 200 then
-            enemy:set_state(require("scripts.enemy.states.chase"):new())
+            enemy:set_state(require("scripts._src.enemy.states.chase"):new())
         end
     end
     -- Здесь позже можно добавить:
