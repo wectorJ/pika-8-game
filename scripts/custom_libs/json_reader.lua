@@ -6,6 +6,7 @@ local function read(_path)
     if not file then return nil end
 
     local res = file:read("*a")
+    file:close()
     return res
 end
 

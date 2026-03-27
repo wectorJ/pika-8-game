@@ -3,8 +3,8 @@ local json = require("lua_modules.json")
 local Vec2, Collision, Enemy, EnemySpawner = Libs.Vec2, Libs.Collision, Libs.Enemy, Libs.EnemySpawner
 
 local config = Libs.JsonReader.bind("config.json")
-window_width = config("window_width", 740)
-window_height = config("window_height", 420)
+window_width = config("window_width", 0)
+window_height = config("window_height", 0)
 
 function _init()
     spr = GFX.load("assets/sprites/player/player.png")
