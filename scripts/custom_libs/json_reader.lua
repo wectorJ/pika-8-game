@@ -1,3 +1,4 @@
+--TODO rework loading in Lua
 local json = require("lua_modules.json")
 local Reader = {}
 

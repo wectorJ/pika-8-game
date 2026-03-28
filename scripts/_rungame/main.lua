@@ -1,5 +1,4 @@
 local Libs = require("scripts.custom_libs.custom_libs")
-local json = require("lua_modules.json")
 local Vec2, Collision, Enemy, EnemySpawner = Libs.Vec2, Libs.Collision, Libs.Enemy, Libs.EnemySpawner
 
 local config = Libs.JsonReader.bind("config.json")
@@ -62,10 +61,12 @@ function _update(delta)
 
         -- collision with player
         if Collision.rect_collis(player_pos, player_width, player_height, 
-        Vec2:new(enemy.x, enemy.y), enemy.width, enemy.height) then
+        Vec2:new(enemy.x, enemy.y), enemy.width, enemy.height) and
+        enemy.state.name ~= "stunned" then
             print("Hit!")
             score = score + 1
-            enemy.alive = false
+            enemy:set_state(require("scripts._src.enemy.states.stunned"):new())
+            print("State name: " .. enemy.state.name)
         end
 
         if not enemy.alive then
