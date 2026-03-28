@@ -62,7 +62,7 @@ function _update(delta)
         -- collision with player
         if Collision.rect_collis(player_pos, player_width, player_height, 
         Vec2:new(enemy.x, enemy.y), enemy.width, enemy.height) and
-        enemy.state.name ~= "stunned" then
+        enemy.state.name ~= "stunned" and enemy.health>=1 then
             print("Hit!")
             score = score + 1
             enemy:set_state(require("scripts._src.enemy.states.stunned"):new())

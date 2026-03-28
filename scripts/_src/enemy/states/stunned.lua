@@ -29,9 +29,14 @@ function StunnedState:enter(enemy)
     self.rand_force = math.random(1, 4)
 
     self.dir = (-Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y):normalize())
+
+    enemy.health = enemy.health - 1
 end
 
 function StunnedState:update(enemy, dt)
+    if enemy.health < 1 then
+        enemy:set_state(require("scripts._src.enemy.states.death"):new())
+    end
     if self.push_speed > 0 then
         enemy.x = enemy.x + self.dir.x * self.push_speed * dt * self.rand_force
         enemy.y = enemy.y + self.dir.y * self.push_speed * dt * self.rand_force
@@ -44,13 +49,14 @@ function StunnedState:update(enemy, dt)
     end
 
     self.stunned_timer = self.stunned_timer + dt
+    
     if self.stunned_timer > 3 then
         enemy:set_state(require("scripts._src.enemy.states.idle"):new())
     end
 end
 
 function StunnedState:exit(enemy)
-    -- enemy.speed = enemy.speed / enemy.self.speed_modify
+    print("Enemy health: " .. enemy.health)
     print("[StunnedState] The enemy woke up")
 end
 
