@@ -11,6 +11,7 @@ Collision = {}
 ---@param h2 number - height of the second rectangle
 ---@return boolean - true if the rectangles collide, false otherwise
 function Collision.rect_collis(pos1, w1, h1, pos2, w2, h2)
+    --TODO collision shape == sprite rotation
     if getmetatable(pos1) ~= Vec2 or getmetatable(pos2) ~= Vec2 then
         error("Attempt to check collision with non-Vec2 position")
     end

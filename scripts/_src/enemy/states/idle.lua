@@ -1,21 +1,22 @@
-function extend(parent)
-    local child = {}
-    setmetatable(child,{__index = parent})
-    return child
-end
-
-
 local State = require("scripts._src.enemy.states._state")
 local Vec2 = require("scripts.custom_libs.vec2")
+local OOP = require("scripts.custom_libs.oop")
 
-local IdleState = extend(State)
+local IdleState = OOP.extend(State)
 IdleState.__index = IdleState
+
+local SWAY_AMPLITUDE = 3
+local DIRECTION_CHANCE_THRESHOLD = 0.5
+local WAVE_FREQ_X = 2
+local WAVE_FREQ_Y = 4
+local AGGRO_DISTANCE = 200
 
 -- constructor
 function IdleState:new()
-    local self = State.new(self, "idle")
-    setmetatable(self, IdleState)
-    return self
+    local inst = State:new("idle")
+    setmetatable(inst, self)
+    self.__index = self
+    return inst
 end
 
 
@@ -24,19 +25,19 @@ function IdleState:enter(enemy)
     enemy.idle_timer = 0
     enemy.base_y = enemy.y -- base_y and timer are bound to an object
     enemy.base_x = enemy.x
-    enemy.rand_direction = math.random() < 0.5 and -1 or 1
-    amplitude = 3
+    enemy.rand_direction = math.random() < DIRECTION_CHANCE_THRESHOLD and -1 or 1
+    self.amplitude = SWAY_AMPLITUDE
 end
 
 function IdleState:update(enemy, dt)
     enemy.idle_timer = enemy.idle_timer + dt
-    enemy.x = enemy.base_x + math.cos(enemy.idle_timer * 2) * amplitude * enemy.rand_direction
-    enemy.y = enemy.base_y + math.sin(enemy.idle_timer * 4) * amplitude
+    enemy.x = enemy.base_x + math.cos(enemy.idle_timer * WAVE_FREQ_X) * self.amplitude * enemy.rand_direction
+    enemy.y = enemy.base_y + math.sin(enemy.idle_timer * WAVE_FREQ_Y) * self.amplitude
 
     if enemy.target then
         local dir = Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y)
-        if dir:length() < 200 then
-            enemy:set_state(require("scripts._src.enemy.states.chase"):new())
+        if dir:length() < AGGRO_DISTANCE then
+            enemy:set_state(enemy.states.chase)
         end
     end
     -- Здесь позже можно добавить:

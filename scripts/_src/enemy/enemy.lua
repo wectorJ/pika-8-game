@@ -1,5 +1,7 @@
--- scripts/enemy/enemy.lua
 local IdleState = require("scripts._src.enemy.states.idle")
+local ChaseState = require("scripts._src.enemy.states.chase")
+local StunnedState = require("scripts._src.enemy.states.stunned")
+local DeathState = require("scripts._src.enemy.states.death")
 local Vec2 = require("scripts.custom_libs.vec2")
 
 -- Class Enemy
@@ -31,9 +33,16 @@ function Enemy:new(x, y, sprite, width, height, speed)
     self.alive = true
     self.health = 2
 
+    self.states = {
+        idle = IdleState:new(),
+        chase = ChaseState:new(),
+        stunned = StunnedState:new(),
+        death = DeathState:new()
+    }
+
     -- State machine
-    self.state = nil          -- current state (State object)
-    self:set_state(IdleState:new())
+    self.state = self.states.idle         -- current state (State object)
+    self:set_state(self.state)
 
     return self
 end

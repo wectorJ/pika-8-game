@@ -54,18 +54,13 @@ function _update(delta)
         enemy:update(delta)
         enemy:draw()
 
-        --TODO change death condition
-        -- if enemy.y > 512 then
-        --     enemy.alive = false
-        -- end
-
         -- collision with player
         if Collision.rect_collis(player_pos, player_width, player_height, 
         Vec2:new(enemy.x, enemy.y), enemy.width, enemy.height) and
         enemy.state.name ~= "stunned" and enemy.health>=1 then
             print("Hit!")
             score = score + 1
-            enemy:set_state(require("scripts._src.enemy.states.stunned"):new())
+            enemy:set_state(enemy.states.stunned)
             print("State name: " .. enemy.state.name)
         end
 

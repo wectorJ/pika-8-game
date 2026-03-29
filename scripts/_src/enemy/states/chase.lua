@@ -1,23 +1,21 @@
 local State = require("scripts._src.enemy.states._state")
 local Collision = require("scripts.custom_libs.collisions")
 local Vec2 = require("scripts.custom_libs.vec2")
+local OOP = require("scripts.custom_libs.oop")
 
-function extend(parent)
-    local child = {}
-    setmetatable(child,{__index = parent})
-    return child
-end
-
-local ChaseState = extend(State)
+local ChaseState = OOP.extend(State)
 ChaseState.__index = ChaseState
 
-
+local MAX_CHASE_DISTANCE = 300
+local ROTATION_OFFSET = 90
 
 function ChaseState:new()
-    local self = State.new(self, "chase")
-    setmetatable(self, ChaseState)
-    return self
+    local inst = State:new("chase")
+    setmetatable(inst, self)
+    self.__index = self
+    return inst
 end
+
 
 --- calling once when enemy enters this state
 function ChaseState:enter(enemy)
@@ -28,15 +26,15 @@ end
 function ChaseState:update(enemy, dt)
     local dir = Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y)
     local angle = dir:angle()
-    length = dir:length()
+    local length = dir:length()
 
-    if length > 0 and length < 300 then
+    if length > 0 and length < MAX_CHASE_DISTANCE then
         dir:normalize()
-        enemy.sprite_obj:rotation(math.deg(angle) + 90) -- +90 to rotate relative to the top of the sprite
+        enemy.sprite_obj:rotation(math.deg(angle) + ROTATION_OFFSET) -- +90 to rotate relative to the top of the sprite
         enemy.x = enemy.x + dir.x * enemy.speed * dt
         enemy.y = enemy.y + dir.y * enemy.speed * dt
     else
-        enemy:set_state(require("scripts._src.enemy.states.idle"):new())
+        enemy:set_state(enemy.states.idle)
     end
 end
 

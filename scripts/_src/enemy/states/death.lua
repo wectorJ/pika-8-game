@@ -1,29 +1,31 @@
---TODO refactoring
-
-function extend(parent)
-    local child = {}
-    setmetatable(child,{__index = parent})
-    return child
-end
-
 local State = require("scripts._src.enemy.states._state")
 local Vec2 = require("scripts.custom_libs.vec2")
+local OOP = require("scripts.custom_libs.oop")
 
-local DeathState = extend(State)
+local DeathState = OOP.extend(State)
 DeathState.__index = DeathState
 
+local STARTING_ALPHA = 255
+local FADE_OUT_SPEED = 140
+local PUSH_SPEED_MULT = 1.5
+local DECELERATION_MULT = 1.2
+local RANDOM_FORCE_MIN = 1
+local RANDOM_FORCE_MAX = 4
+
 function DeathState:new()
-    local self = State.new(self, "death")
-    setmetatable(self, DeathState)
-    return self
+    local inst = State:new("death")
+    setmetatable(inst, self)
+    self.__index = self
+    return inst
 end
 
 function DeathState:enter(enemy)
-    self.i = 255
+    self.i = STARTING_ALPHA
+    self.fade_speed = FADE_OUT_SPEED
 
-    self.push_speed = enemy.speed * 1.5
-    self.deceleration = self.push_speed * 1.2
-    self.rand_force = math.random(1, 4)
+    self.push_speed = enemy.speed * PUSH_SPEED_MULT
+    self.deceleration = self.push_speed * DECELERATION_MULT
+    self.rand_force = math.random(RANDOM_FORCE_MIN, RANDOM_FORCE_MAX)
 
     self.dir = (-Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y):normalize())
 end
@@ -35,8 +37,9 @@ function DeathState:update(enemy, dt)
         enemy:set_state(require("scripts._src.enemy.states.idle"):new())
     end
     enemy.sprite_obj:color({self.i, self.i, self.i, self.i})
-    self.i = self.i - 1
-    enemy.y = enemy.y + enemy.speed * dt * (255-self.i) * 0.3
+    self.i = self.i - dt * self.fade_speed
+
+    enemy.y = enemy.y + enemy.speed * dt * (STARTING_ALPHA-self.i) * 0.3
 
     enemy.x = enemy.x + self.dir.x * self.push_speed * dt * self.rand_force
     enemy.y = enemy.y + self.dir.y * self.push_speed * dt * self.rand_force
