@@ -27,14 +27,16 @@ end
 --- calling every frame
 function ChaseState:update(enemy, dt)
     local dir = Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y)
+    local angle = dir:angle()
     length = dir:length()
 
     if length > 0 and length < 300 then
         dir:normalize()
+        enemy.sprite_obj:rotation(math.deg(angle) + 90) -- +90 to rotate relative to the top of the sprite
         enemy.x = enemy.x + dir.x * enemy.speed * dt
         enemy.y = enemy.y + dir.y * enemy.speed * dt
-    -- else
-    --     enemy:set_state(require("scripts._src.enemy.states.idle"):new())
+    else
+        enemy:set_state(require("scripts._src.enemy.states.idle"):new())
     end
 end
 

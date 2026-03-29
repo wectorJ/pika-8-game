@@ -20,8 +20,6 @@ This is a simple game created using the Pika-8 engine. The project demonstrates 
 ## Building the Project
 
 ```bash
-rm -f CMakeCache.txt
-cmake -G "MinGW Makefiles" -DCMAKE_MAKE_PROGRAM=mingw32-make -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -S . -B build
 cmake --build build
 ```
 
@@ -48,6 +46,7 @@ After building, the executable `pika-8.exe` will be in the project root:
 
 ## Project Structure
 
+**DEPRECATED**
 ```
 pika-8-game/
 ├── pika-8-engine/      # Engine submodule (library)
@@ -195,6 +194,6 @@ position = position + velocity * delta
 
 MIT License. See [LICENSE](LICENSE) file for details.
 
-## Author
+## Authors
 
 GarniyHlopchik, KotiasFeet, wectorJ

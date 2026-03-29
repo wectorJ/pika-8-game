@@ -26,10 +26,10 @@ function Enemy:new(x, y, sprite, width, height, speed)
     self.width = width or 32
     self.height = height or 32
 
-    self.speed = speed or 50
+    self.speed = speed or 70
     self.sprite_obj = GFX.spr(sprite, self.x, self.y, self.width, self.height)
     self.alive = true
-    self.health = 1
+    self.health = 2
 
     -- State machine
     self.state = nil          -- current state (State object)

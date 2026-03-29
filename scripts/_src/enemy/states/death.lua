@@ -36,7 +36,7 @@ function DeathState:update(enemy, dt)
     end
     enemy.sprite_obj:color({self.i, self.i, self.i, self.i})
     self.i = self.i - 1
-    enemy.y = enemy.y + enemy.speed * dt * (255-self.i) * 0.5
+    enemy.y = enemy.y + enemy.speed * dt * (255-self.i) * 0.3
 
     enemy.x = enemy.x + self.dir.x * self.push_speed * dt * self.rand_force
     enemy.y = enemy.y + self.dir.y * self.push_speed * dt * self.rand_force
