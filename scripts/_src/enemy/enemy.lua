@@ -2,6 +2,7 @@ local IdleState = require("scripts._src.enemy.states.idle")
 local ChaseState = require("scripts._src.enemy.states.chase")
 local StunnedState = require("scripts._src.enemy.states.stunned")
 local DeathState = require("scripts._src.enemy.states.death")
+local PatrolState = require("scripts._src.enemy.states.patrol")
 local Vec2 = require("scripts.custom_libs.vec2")
 
 -- Class Enemy
@@ -23,6 +24,7 @@ function Enemy:new(x, y, sprite, width, height, speed)
     self.y = y
 
     self.target = nil
+    self.protect = nil
 
     -- sprite params
     self.width = width or 32
@@ -37,7 +39,8 @@ function Enemy:new(x, y, sprite, width, height, speed)
         idle = IdleState:new(),
         chase = ChaseState:new(),
         stunned = StunnedState:new(),
-        death = DeathState:new()
+        death = DeathState:new(),
+        patrol = PatrolState:new()
     }
 
     -- State machine

@@ -6,7 +6,9 @@ window_width = config("window_width", 0)
 window_height = config("window_height", 0)
 
 function _init()
-    spr = GFX.load("assets/sprites/player/player.png")
+    local spr = GFX.load("assets/sprites/player/player.png")
+    local ship_spr = GFX.load("assets/sprites/objects/ship.png")
+    local treasure_spr = GFX.load("assets/sprites/objects/treasure.png")
 
     enemy_spr = {
         GFX.load("assets/sprites/enemies/enemy1.png"),
@@ -26,10 +28,15 @@ function _init()
     player_width = 64
     player_height = 64
     player_speed = 250.0
+
+    treasure_pos = Vec2:new(900, 250)
+
     enemies = {}
     score = 0
 
     player = GFX.spr(spr, player_pos.x, player_pos.y, player_width, player_height)
+    ship = GFX.spr(ship_spr, 300, 250, 200, 200)
+    treasure = GFX.spr(treasure_spr, treasure_pos.x, treasure_pos.y, 200, 200)
 end
 
 function _update(delta)
@@ -38,11 +45,14 @@ function _update(delta)
     GFX.text("Score: "..score, 10, 30, 2, "default", 0.4)
     player:pos(player_pos.x, player_pos.y)
     player:draw()
+    ship:draw()
+    treasure:draw()
 
     local x, y, sprite = EnemySpawner.spawn_for_duration(generator, spawn_state, delta)
     if x then
         local e = Enemy:new(x, y, sprite)
         e.target = player_pos
+        e.protect = treasure_pos
         table.insert(enemies, e)
         enemies_counter = enemies_counter + 1
     end

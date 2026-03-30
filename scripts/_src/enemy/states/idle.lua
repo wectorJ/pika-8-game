@@ -40,6 +40,8 @@ function IdleState:update(enemy, dt)
             enemy:set_state(enemy.states.chase)
         end
     end
+
+    if enemy.idle_timer > 2 then enemy:set_state(enemy.states.patrol) end
     -- Здесь позже можно добавить:
     --   таймер перехода в patrol
     --   проверку "вижу ли игрока" → переход в chase

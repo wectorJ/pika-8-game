@@ -30,7 +30,7 @@ function ChaseState:update(enemy, dt)
 
     if length > 0 and length < MAX_CHASE_DISTANCE then
         dir:normalize()
-        enemy.sprite_obj:rotation(math.deg(angle) + ROTATION_OFFSET) -- +90 to rotate relative to the top of the sprite
+        enemy.sprite_obj:rotation(math.deg(angle) + ROTATION_OFFSET)
         enemy.x = enemy.x + dir.x * enemy.speed * dt
         enemy.y = enemy.y + dir.y * enemy.speed * dt
     else
