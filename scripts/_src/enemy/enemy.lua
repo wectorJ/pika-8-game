@@ -25,6 +25,7 @@ function Enemy:new(x, y, sprite, width, height, speed)
 
     self.target = nil
     self.protect = nil
+    self.aggro_dist = 200
 
     -- sprite params
     self.width = width or 32

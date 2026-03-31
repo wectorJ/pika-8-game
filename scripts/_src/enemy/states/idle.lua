@@ -9,7 +9,6 @@ local SWAY_AMPLITUDE = 3
 local DIRECTION_CHANCE_THRESHOLD = 0.5
 local WAVE_FREQ_X = 2
 local WAVE_FREQ_Y = 4
-local AGGRO_DISTANCE = 200
 
 -- constructor
 function IdleState:new()
@@ -36,15 +35,12 @@ function IdleState:update(enemy, dt)
 
     if enemy.target then
         local dir = Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y)
-        if dir:length() < AGGRO_DISTANCE then
+        if dir:length() < enemy.aggro_dist then
             enemy:set_state(enemy.states.chase)
         end
     end
 
     if enemy.idle_timer > 2 then enemy:set_state(enemy.states.patrol) end
-    -- Здесь позже можно добавить:
-    --   таймер перехода в patrol
-    --   проверку "вижу ли игрока" → переход в chase
 end
 
 function IdleState:exit(enemy)

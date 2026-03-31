@@ -26,7 +26,6 @@ end
 --- @param state table created by EnemySpawner.create_state()
 --- @param dt number delta time (time since last frame)
 function EnemySpawner.spawn_for_duration(generator, state, dt)
-    -- if true, the iterator does nothing 
     if state.finished then
         return nil
     end
@@ -46,8 +45,8 @@ function EnemySpawner.spawn_for_duration(generator, state, dt)
     if state.interval_timer >= state.interval then
         state.interval_timer = state.interval_timer - state.interval
 
-        local ok, x, y, sprite = coroutine.resume(generator) -- get data from generator 
-                                                             -- ok is boolean status from courutine
+        local ok, x, y, sprite = coroutine.resume(generator) -- ok is boolean status from courutine
+                                                             
         if not ok then
             state.finished = true
             print("[Spawner] Generator error: " .. tostring(x)) -- x is an error message (2nd return value of resume)

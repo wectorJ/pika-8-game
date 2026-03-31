@@ -34,7 +34,6 @@ function DeathState:update(enemy, dt)
     if self.i < 1 then
         enemy.alive = false
         print("[DeathState] enemy is death")
-        enemy:set_state(require("scripts._src.enemy.states.idle"):new())
     end
     enemy.sprite_obj:color({self.i, self.i, self.i, self.i})
     self.i = self.i - dt * self.fade_speed
