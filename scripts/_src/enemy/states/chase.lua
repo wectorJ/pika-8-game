@@ -1,6 +1,6 @@
 local State = require("scripts._src.enemy.states._state")
 local Collision = require("scripts.custom_libs.collisions")
-local Vec2 = require("scripts.custom_libs.vec2")
+local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local OOP = require("scripts.custom_libs.oop")
 
 local ChaseState = OOP.extend(State)

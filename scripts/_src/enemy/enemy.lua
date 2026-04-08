@@ -3,7 +3,7 @@ local ChaseState = require("scripts._src.enemy.states.chase")
 local StunnedState = require("scripts._src.enemy.states.stunned")
 local DeathState = require("scripts._src.enemy.states.death")
 local PatrolState = require("scripts._src.enemy.states.patrol")
-local Vec2 = require("scripts.custom_libs.vec2")
+local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
 -- Class Enemy
 local Enemy = {}

@@ -1,5 +1,5 @@
 local State = require("scripts._src.enemy.states._state")
-local Vec2 = require("scripts.custom_libs.vec2")
+local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local OOP = require("scripts.custom_libs.oop")
 
 local IdleState = OOP.extend(State)

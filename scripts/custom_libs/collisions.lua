@@ -1,4 +1,4 @@
-local Vec2 = require("scripts.custom_libs.vec2")
+local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
 Collision = {}
 

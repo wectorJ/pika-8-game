@@ -28,7 +28,7 @@ function Deque:push_front(value)
         self.tail = node
     end
     
-    return self
+    return node
 end
 
 function Deque:push_back(value)
@@ -43,7 +43,7 @@ function Deque:push_back(value)
         self.tail = node
     end
     
-    return self
+    return node
 end
 
 function Deque:pop_back()
@@ -80,6 +80,26 @@ function Deque:pop_front()
     return value
 end
 
+function Deque:pop_node(node)
+    if not node then return error("Node with the address " .. tostring(node) .. " does not exist") end
+
+    if node.prev then
+        node.prev.next = node.next
+    else
+        self.head = node.next
+    end
+
+    if node.next then
+        node.next.prev = node.prev
+    else
+        self.tail = node.prev
+    end
+
+    node.prev = nil
+    node.next = nil
+
+    return node.value
+end
 
 function Deque:get_front()
     return self.head and self.head.value or nil
@@ -105,28 +125,11 @@ function Deque:toTable()
     return t
 end
 
-function print_t(t)
+function Deque:print_deq()
+    local t = self:toTable()
     for i=1, #t do
         print(t[i])
     end
 end
 
-
---TODO move tests to other file 
-local deq = Deque.new()
-
-deq:push_back(1)
-deq:push_back(2)
-deq:push_back(3)
-deq:push_back(4)
-
-print_t(deq:toTable())
-
-print("\n")
-
-deq:push_front(5)
-deq:push_front(6)
-deq:push_front(7)
-deq:push_front(8)
-
-print_t(deq:toTable())
+return Deque
