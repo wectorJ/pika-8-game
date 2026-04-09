@@ -144,4 +144,8 @@ function PriorDeque:dequeue(mode)
     return fn(self)
 end
 
+function PriorDeque:is_empty()
+    return self.deque:is_empty()
+end
+
 return PriorDeque
