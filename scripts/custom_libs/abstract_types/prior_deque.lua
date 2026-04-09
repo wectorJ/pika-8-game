@@ -1,4 +1,4 @@
---TODO cache min/max prior for O(1 or less const)
+--TODO cache min/max prior for O(1)
 
 local Deque = require("scripts.custom_libs.abstract_types.deque")
 
@@ -12,20 +12,27 @@ function PriorDeque.new(max_priority)
     self.max_priority = max_priority or 10
 
     self.prior_list = {}
-    for i = 0, self.max_priority do
+    for i = 1, self.max_priority do
         self.prior_list[i] = Deque.new()
     end
 
     self.deque = Deque.new()
-    self.min_ptr = 0
-    self.max_ptr = self.max_priority
+    self.min_ptr = self.max_priority + 1
+    self.max_ptr = 0
 
     return self
 end
 
 function PriorDeque:enqueue(data, priority)
+    if data == nil then
+        error("Required parameter data is missing")
+    end
+    if not priority then
+        error("Required parameter priority is missing. Max priority is " .. self.max_priority .. ", min priority is 1")
+    end
+
     if priority < 1 or priority > self.max_priority then
-        error(string.format("enqueue: priority out of range"))
+        error(string.format("Priority is out of range"))
     end
 
     local deque_node = self.deque:push_back({ data = data, priority = priority })
@@ -54,7 +61,7 @@ end
 local function remove_by_priority(self, p)
     local bucket_node = self.prior_list[p].head
     local deque_node  = bucket_node.value
-    local data        = deque_node.value.data
+    local data = deque_node.value.data
 
     self.prior_list[p]:pop_front()
     self.deque:pop_node(deque_node)
@@ -74,7 +81,7 @@ local peek_impl = {
     end,
 
     highest = function(self)
-        for i = self.max_ptr, 0, -1 do
+        for i = self.max_ptr, 1, -1 do
             if self.prior_list[i].head then
                 self.max_ptr = i
                 local v = self.prior_list[i].head.value.value

@@ -135,8 +135,6 @@ function Deque:clear()
     self.tail = nil
 end
 
----Checks if the deque is empty
---- @return boolean true if empty, false otherwise
 function Deque:is_empty()
     return self.head == nil
 end
