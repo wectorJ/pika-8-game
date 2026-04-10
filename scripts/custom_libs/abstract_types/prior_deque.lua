@@ -23,6 +23,14 @@ function PriorDeque.new(max_priority)
     return self
 end
 
+local function createPriorDeque_Node(data, priority)
+    return {
+        data = data,
+        priority = priority,
+        bucket_node = nil
+    }
+end
+
 function PriorDeque:enqueue(data, priority)
     if data == nil then
         error("Required parameter data is missing")
@@ -30,15 +38,16 @@ function PriorDeque:enqueue(data, priority)
     if not priority then
         error("Required parameter priority is missing. Max priority is " .. self.max_priority .. ", min priority is 1")
     end
-
     if priority < 1 or priority > self.max_priority then
-        error(string.format("Priority is out of range"))
+        error("Priority is out of range")
     end
 
-    local deque_node = self.deque:push_back({ data = data, priority = priority })
-    local bucket_node = self.prior_list[priority]:push_back(deque_node)
-    deque_node.value.bucket_node = bucket_node
+    local item = createPriorDeque_Node(data, priority)
+    local deque_node = self.deque:push_back(item)
+    local bucket = self.prior_list[priority]:push_back(deque_node) -- bucket_node.value is a reference to deque_node
+    item.bucket_node = bucket
 
+    --[ ] after adequate optimization delete
     if priority < self.min_ptr then 
         self.min_ptr = priority 
     end
@@ -59,8 +68,9 @@ local function remove_by_deque_node(self, deque_node)
 end
 
 local function remove_by_priority(self, p)
+    --TODO only head, it might be worth doing it both ways.
     local bucket_node = self.prior_list[p].head
-    local deque_node  = bucket_node.value
+    local deque_node = bucket_node.value
     local data = deque_node.value.data
 
     self.prior_list[p]:pop_front()
@@ -69,8 +79,11 @@ local function remove_by_priority(self, p)
     return data, p
 end
 
-local peek_impl = {
-    lowest = function(self)
+---Peek at the value of the Priority Deque
+---@param mode string modes: "lowest", "highest", "oldest" or "newest"
+function PriorDeque:peek(mode)
+    if mode == "lowest" then
+        --[ ] after adequate optimization redo
         for i = self.min_ptr, self.max_priority do
             if self.prior_list[i].head then
                 self.min_ptr = i
@@ -78,9 +91,10 @@ local peek_impl = {
                 return v.data, i
             end
         end
-    end,
+        return nil
 
-    highest = function(self)
+    elseif mode == "highest" then
+        --[ ] after adequate optimization redo
         for i = self.max_ptr, 1, -1 do
             if self.prior_list[i].head then
                 self.max_ptr = i
@@ -88,67 +102,58 @@ local peek_impl = {
                 return v.data, i
             end
         end
-    end,
+        return nil
 
-    oldest = function(self)
+    elseif mode == "oldest" then
         if not self.deque.head then return nil end
         local v = self.deque.head.value
         return v.data, v.priority
-    end,
 
-    newest = function(self)
+    elseif mode == "newest" then
         if not self.deque.tail then return nil end
         local v = self.deque.tail.value
         return v.data, v.priority
-    end,
-}
 
-function PriorDeque:peek(mode)
-    local fn = peek_impl[mode]
-    if not fn then
-        error("peek: unknown mode '" .. tostring(mode) .. "'")
+    else
+        error("peek: unknown mode  '".. tostring(mode) .. "'")
     end
-    return fn(self)
 end
 
-local dequeue_impl = {
-    lowest = function(self)
-        local _, p = peek_impl.lowest(self)
+---@param mode string modes: "lowest", "highest", "oldest" or "newest"
+function PriorDeque:dequeue(mode)
+    if mode == "lowest" then
+        local _, p = self:peek("lowest")
         if not p then return nil end
         local data, priority = remove_by_priority(self, p)
+
+        --[ ] after adequate optimization delete
         if not self.prior_list[p].head then
             self.min_ptr = p + 1
         end
         return data, priority
-    end,
 
-    highest = function(self)
-        local _, p = peek_impl.highest(self)
+    elseif mode == "highest" then
+        local _, p = self:peek("highest")
         if not p then return nil end
         local data, priority = remove_by_priority(self, p)
+
+        --[ ] after adequate optimization delete
         if not self.prior_list[p].head then
             self.max_ptr = p - 1
         end
         return data, priority
-    end,
 
-    oldest = function(self)
+    elseif mode == "oldest" then
         if not self.deque.head then return nil end
         return remove_by_deque_node(self, self.deque.head)
-    end,
 
-    newest = function(self)
+    elseif mode == "newest" then
         if not self.deque.tail then return nil end
         return remove_by_deque_node(self, self.deque.tail)
-    end,
-}
-
-function PriorDeque:dequeue(mode)
-    local fn = dequeue_impl[mode]
-    if not fn then
+        
+    else
         error("dequeue: unknown mode '" .. tostring(mode) .. "'")
     end
-    return fn(self)
 end
 
 function PriorDeque:is_empty()

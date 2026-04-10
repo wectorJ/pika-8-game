@@ -40,6 +40,10 @@ function _init()
 end
 
 function _update(delta)
+    -- fps = 1/delta --TODO need FPS counter
+    -- if(fps < 300) then
+    --     print("FPS: "..fps)
+    -- end
     GFX.cls()
 
     GFX.text("Score: "..score, 10, 30, 2, "default", 0.4)
