@@ -1,0 +1,52 @@
+function async_find(deque, predicate, callback, max_itrs_in_stp)
+    max_itrs_in_stp = max_itrs_in_stp or 50
+    local co = coroutine.create(function()
+        local index = 1
+        local current = deque.head
+        local iterations = 0
+
+        while current do
+            if predicate(current.value) then
+                if callback then callback(current.value, current, index) end
+                return index, current.value
+            end
+
+            index = index + 1
+            current = current.next
+            iterations = iterations + 1
+
+            if iterations >= max_itrs_in_stp then
+                iterations = 0
+                coroutine.yield()
+            end
+        end
+
+        if callback then callback(nil, nil, nil) end
+        return nil, nil
+    end)
+
+    return co
+end
+
+deq = require("scripts.custom_libs.abstract_types.deque").new()
+
+deq:push_back(1)
+deq:push_back(2)
+deq:push_back(3)
+deq:push_back(4)
+
+local collback = function(value)
+    if value then
+        print("Found value: "..value)
+    else
+        print("Value not found")
+    end
+end
+
+local find_co = async_find(deq, function(x) return x == 3 end, collback, 1)
+local steps = 1
+while coroutine.status(find_co) ~= "dead" do
+    print("Step: "..steps)
+    coroutine.resume(find_co)
+    steps = steps + 1
+end
