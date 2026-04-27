@@ -1,3 +1,10 @@
+--- Async search for an element in a deque (cooperative async)
+---@param deque table Deque 
+---@param predicate fun(value: any): boolean predicate function to check each element
+---@param callback? fun(value: any|nil, node: table|nil, index: number|nil, err: string|nil) if not applied, the result is returned to the coroutine
+---@param max_itrs_in_stp? number max number of iterations per coroutine step (default 50)
+---@return thread co if no callback is passed
+---@return AsyncFindController controller has methods: abort(); is_aborted()
 local function async_find(deque, predicate, callback, max_itrs_in_stp)
     max_itrs_in_stp = max_itrs_in_stp or 50
     local aborted = false
@@ -10,19 +17,19 @@ local function async_find(deque, predicate, callback, max_itrs_in_stp)
         while current do
             if aborted then
                 if callback then callback(nil, nil, nil, "AbortError") end
-                return nil, nil
+                return nil, nil, nil, "AbortError"
             end
 
             local success, result_or_err = pcall(predicate, current.value)
             
             if not success then
                 if callback then callback(nil, nil, nil, result_or_err) end
-                return nil, nil
+                return nil, nil, nil, result_or_err
             end
 
             if result_or_err then
                 if callback then callback(current.value, current, index, nil) end
-                return index, current.value
+                return current.value, current, index, nil
             end
 
             index = index + 1
@@ -36,7 +43,7 @@ local function async_find(deque, predicate, callback, max_itrs_in_stp)
         end
 
         if callback then callback(nil, nil, nil, nil) end
-        return nil, nil
+        return nil, nil, nil, nil -- return to courutine
     end)
 
     local controller = {
