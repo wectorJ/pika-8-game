@@ -2,11 +2,11 @@
 ---@param deque table Deque 
 ---@param predicate fun(value: any): boolean predicate function to check each element
 ---@param callback? fun(value: any|nil, node: table|nil, index: number|nil, err: string|nil) if not applied, the result is returned to the coroutine
----@param max_itrs_in_stp? number max number of iterations per coroutine step (default 50)
+---@param max_itrs_in_stp? number max number of iterations per coroutine step (default 10)
 ---@return thread co if no callback is passed
----@return AsyncFindController controller has methods: abort(); is_aborted()
+---@return controller table has methods: abort(); is_aborted()
 local function async_find(deque, predicate, callback, max_itrs_in_stp)
-    max_itrs_in_stp = max_itrs_in_stp or 50
+    max_itrs_in_stp = max_itrs_in_stp or 10
     local aborted = false
 
     local co = coroutine.create(function()
