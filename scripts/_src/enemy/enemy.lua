@@ -3,6 +3,7 @@ local ChaseState = require("scripts._src.enemy.states.chase")
 local StunnedState = require("scripts._src.enemy.states.stunned")
 local DeathState = require("scripts._src.enemy.states.death")
 local PatrolState = require("scripts._src.enemy.states.patrol")
+local State = require("scripts._src.enemy.states._state")
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
 -- Class Enemy
@@ -45,27 +46,15 @@ function Enemy:new(x, y, sprite, width, height, speed)
     }
 
     -- State machine
-    self.state = self.states.idle         -- current state (State object)
-    self:set_state(self.state)
+    self.fsm = State.FSM:new(self, self.states.idle)
 
     return self
-end
-
---- switch state
-function Enemy:set_state(new_state)
-    if self.state then
-        self.state:exit(self)
-    end
-
-    self.state = new_state
-
-    self.state:enter(self)
 end
 
 function Enemy:update(dt)
     if not self.alive then return end
 
-    self.state:update(self, dt)
+    self.fsm:update(dt)
 end
 
 --- draw enemy
@@ -77,10 +66,7 @@ end
 
 --- for debug
 function Enemy:get_state_name()
-    if self.state then
-        return self.state.name
-    end
-    return "none"
+    return self.fsm:get_state_name()
 end
 
 return Enemy

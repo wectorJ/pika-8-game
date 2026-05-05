@@ -3,3 +3,4 @@ build/
 scripts/custom_libs/abstract_types/tests/*
 
 pika-8.exe
+pika-8.pdb

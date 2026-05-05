@@ -36,11 +36,11 @@ function IdleState:update(enemy, dt)
     if enemy.target then
         local dir = Vec2:new(enemy.target.x - enemy.x, enemy.target.y - enemy.y)
         if dir:length() < enemy.aggro_dist then
-            enemy:set_state(enemy.states.chase)
+            enemy.fsm:set_state(enemy.states.chase)
         end
     end
 
-    if enemy.idle_timer > 2 then enemy:set_state(enemy.states.patrol) end
+    if enemy.idle_timer > 2 then enemy.fsm:set_state(enemy.states.patrol) end
 end
 
 function IdleState:exit(enemy)

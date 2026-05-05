@@ -34,7 +34,7 @@ function ChaseState:update(enemy, dt)
         enemy.x = enemy.x + dir.x * enemy.speed * dt
         enemy.y = enemy.y + dir.y * enemy.speed * dt
     else
-        enemy:set_state(enemy.states.idle)
+        enemy.fsm:set_state(enemy.states.idle)
     end
 end
 

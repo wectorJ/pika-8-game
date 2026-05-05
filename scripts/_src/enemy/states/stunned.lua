@@ -38,7 +38,7 @@ end
 
 function StunnedState:update(enemy, dt)
     if enemy.health < DEATH_HEALTH_THRESHOLD then
-        enemy:set_state(enemy.states.death)
+        enemy.fsm:set_state(enemy.states.death)
     end
     if self.push_speed > 0 then
         enemy.x = enemy.x + self.dir.x * self.push_speed * dt * self.rand_force
@@ -54,7 +54,7 @@ function StunnedState:update(enemy, dt)
     self.stunned_timer = self.stunned_timer + dt
     
     if self.stunned_timer > STUN_DURATION then
-        enemy:set_state(enemy.states.idle)
+        enemy.fsm:set_state(enemy.states.idle)
     end
 end
 
