@@ -22,6 +22,8 @@ function State:exit(enemy) end
 local FSM = {}
 FSM.__index = FSM
 
+--TODO 2 new() methods?
+
 --- Class constructor
 --- @param owner table state owner
 --- @param initial_state table initial state object
