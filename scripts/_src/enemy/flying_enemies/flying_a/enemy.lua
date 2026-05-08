@@ -1,3 +1,4 @@
+local FlyingMob = require("scripts._src.enemy.flying_enemies.flying_mob")
 local IdleState = require("scripts._src.enemy.flying_enemies.flying_a.states.idle")
 local ChaseState = require("scripts._src.enemy.flying_enemies.flying_a.states.chase")
 local StunnedState = require("scripts._src.enemy.flying_enemies.flying_a.states.stunned")
@@ -6,8 +7,7 @@ local PatrolState = require("scripts._src.enemy.flying_enemies.flying_a.states.p
 local State = require("scripts._src.enemy.flying_enemies.flying_a.states._state")
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
--- Class Enemy
-local Enemy = {}
+local Enemy = setmetatable({}, {__index = FlyingMob})
 Enemy.__index = Enemy
 
 --- Class constructor
@@ -19,24 +19,11 @@ Enemy.__index = Enemy
 --- @param speed number movement speed (default 50)
 --- @return table new Enemy object
 function Enemy:new(x, y, sprite, width, height, speed)
-    local self = setmetatable({}, Enemy)
+    -- Calls the FlyingMob/BaseMob constructor to initialize standard fields
+    local health = 3
+    local self = FlyingMob.new(self, x, y, sprite, width, height, speed, health)
 
-    self.x = x
-    self.y = y
-
-    self.target = nil
-    self.protect = nil
-    self.aggro_dist = 200
-
-    -- sprite params
-    self.width = width or 32
-    self.height = height or 32
-
-    self.speed = speed or 70
-    self.sprite_obj = GFX.spr(sprite, self.x, self.y, self.width, self.height)
-    self.alive = true
-    self.health = 3
-
+    -- Enemy 'flying_a' specific states
     self.states = {
         idle = IdleState:new(),
         chase = ChaseState:new(),
@@ -45,28 +32,10 @@ function Enemy:new(x, y, sprite, width, height, speed)
         patrol = PatrolState:new()
     }
 
-    -- State machine
+    -- Set up State machine
     self.fsm = State.FSM:new(self, self.states.idle)
 
     return self
-end
-
-function Enemy:update(dt)
-    if not self.alive then return end
-
-    self.fsm:update(dt)
-end
-
---- draw enemy
-function Enemy:draw()
-    if not self.alive then return end
-    self.sprite_obj:pos(self.x, self.y)
-    self.sprite_obj:draw()
-end
-
---- for debug
-function Enemy:get_state_name()
-    return self.fsm:get_state_name()
 end
 
 return Enemy
