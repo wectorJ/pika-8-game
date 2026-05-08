@@ -23,3 +23,12 @@
 - GitHub: [fntksnd11](https://github.com/fntksnd11)  
 - Role: Developer  
 - Contributions: android port, android inputs
+
+# External Components/Libraries
+
+## `json.lua` by rxi
+- GitHub: [rxi](https://github.com/rxi/)
+- License: MIT
+- Role & Contributions: JSON encoding/decoding library
+
+### <center style="color: #ffcc00;"> Thanks to everyone who contributed to the project! </center>

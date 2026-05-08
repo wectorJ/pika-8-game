@@ -1,3 +1,5 @@
+--BRAINFUCK will be implemented when the node system is operational
+
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
 local Script = {}

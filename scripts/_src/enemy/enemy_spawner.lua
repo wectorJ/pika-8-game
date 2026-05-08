@@ -71,7 +71,7 @@ function EnemySpawner.create_state(_duration, _interval)
         interval_timer = 0, -- time from last spawn
         interval = _interval, -- interval between spawns
         duration = _duration, -- spawn during
-        count = 0, -- count of spawned enemies
+        count = 0,
         finished = false -- iterator finished
     }
 end

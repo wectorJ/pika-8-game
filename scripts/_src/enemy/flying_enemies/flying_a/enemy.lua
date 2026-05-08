@@ -1,9 +1,9 @@
-local IdleState = require("scripts._src.enemy.states.idle")
-local ChaseState = require("scripts._src.enemy.states.chase")
-local StunnedState = require("scripts._src.enemy.states.stunned")
-local DeathState = require("scripts._src.enemy.states.death")
-local PatrolState = require("scripts._src.enemy.states.patrol")
-local State = require("scripts._src.enemy.states._state")
+local IdleState = require("scripts._src.enemy.flying_enemies.flying_a.states.idle")
+local ChaseState = require("scripts._src.enemy.flying_enemies.flying_a.states.chase")
+local StunnedState = require("scripts._src.enemy.flying_enemies.flying_a.states.stunned")
+local DeathState = require("scripts._src.enemy.flying_enemies.flying_a.states.death")
+local PatrolState = require("scripts._src.enemy.flying_enemies.flying_a.states.patrol")
+local State = require("scripts._src.enemy.flying_enemies.flying_a.states._state")
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
 -- Class Enemy
@@ -35,7 +35,7 @@ function Enemy:new(x, y, sprite, width, height, speed)
     self.speed = speed or 70
     self.sprite_obj = GFX.spr(sprite, self.x, self.y, self.width, self.height)
     self.alive = true
-    self.health = 2
+    self.health = 3
 
     self.states = {
         idle = IdleState:new(),
