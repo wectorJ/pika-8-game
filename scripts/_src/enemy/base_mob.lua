@@ -1,4 +1,4 @@
---WITH_AI needs to be reviewed
+--BY_AI needs to be reviewed
 
 local BaseMob = {}
 BaseMob.__index = BaseMob

@@ -1,4 +1,4 @@
---WITH_AI needs to be reviewed
+--BY_AI needs to be reviewed
 
 local BaseMob = require("scripts._src.enemy.base_mob")
 
@@ -16,7 +16,7 @@ function FlyingMob:new(x, y, sprite, width, height, speed, health)
     local ob = BaseMob.new(self, x, y, sprite, width, height, speed, health)
 
     -- For example: a flying altitude, obstacle-avoidance flags, etc.
-    
+    -- ob.flying_altitude = config.flying_altitude or 100
     return ob
 end
 
