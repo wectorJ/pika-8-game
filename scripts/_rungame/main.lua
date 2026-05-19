@@ -1,5 +1,5 @@
 local Libs = require("scripts.custom_libs.custom_libs")
-local Vec2, Collision, Enemy, EnemySpawner = Libs.Vec2, Libs.Collision, Libs.Enemy, Libs.EnemySpawner
+local Vec2, Collision, Enemy, EnemySpawner, EventBus = Libs.Vec2, Libs.Collision, Libs.Enemy, Libs.EnemySpawner, Libs.EventBus
 
 local config = Libs.JsonReader.bind("config.json")
 window_width = config("window_width", 0)
@@ -28,6 +28,7 @@ function _init()
     player_width = 64
     player_height = 64
     player_speed = 250.0
+    ship_is_moving = false
 
     treasure_pos = Vec2:new(900, 250)
 
@@ -110,4 +111,15 @@ function _update(delta)
     dir:normalize()
 
     player_pos = player_pos + dir * player_speed * delta
+
+    --BY_AI ship "move" if player is moving
+    local is_moving = dir:length_sq() > 0
+    if is_moving and not ship_is_moving then
+        EventBus.emit("ship_moving", { pos = player_pos:copy() })
+        print("ship_moving")
+    elseif not is_moving and ship_is_moving then
+        EventBus.emit("ship_stopped", { pos = player_pos:copy() })
+        print("ship_stopped")
+    end
+    ship_is_moving = is_moving
 end

@@ -1,17 +1,61 @@
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local Chunker = require("scripts._src.ai.chunker")
+local EventBus = require("scripts.custom_libs.event_bus")
 
 local VectorFieldStream = {}
 
-local function stream(height, width, chunk_size)
+--BY_AI states should be created from a ready-made FSM interface
+local FieldStates = {
+	idle = {
+		name = "idle",
+		make_vec = function()
+			return Vec2:new(1, 1)
+		end
+	},
+	moving = {
+		name = "moving",
+		make_vec = function()
+			return Vec2:new(2, 2)
+		end
+	}
+}
+
+local function stream(height, width, chunk_size, vec_provider)
 	local chunks = Chunker.create_chunks(height, width, chunk_size)
+	local get_vec = vec_provider or FieldStates.idle.make_vec
 	return coroutine.create(function ()
 		for i = 1, #chunks do
 			local chunk = chunks[i]
-			chunk.data.vec = Vec2:new(1, 1)
+			chunk.data.vec = get_vec()
 			coroutine.yield(chunk)
 		end
 	end)
+end
+
+--BY_AI need rework
+function VectorFieldStream.create_stream(height, width, chunk_size)
+	local state = FieldStates.idle
+	local function set_state(next_state)
+		state = next_state
+	end
+
+	local unsubscribe_moving = EventBus.on("ship_moving", function()
+		set_state(FieldStates.moving)
+	end)
+	local unsubscribe_stopped = EventBus.on("ship_stopped", function()
+		set_state(FieldStates.idle)
+	end)
+
+	local co = stream(height, width, chunk_size, function()
+		return state.make_vec()
+	end)
+
+	local function unsubscribe()
+		unsubscribe_moving()
+		unsubscribe_stopped()
+	end
+
+	return co, unsubscribe
 end
 
 function VectorFieldStream.example(height, width, chunk_size)
@@ -61,6 +105,6 @@ print("Average vector length: " .. result)
 print("Iterations: " .. iters)
 
 local field = VectorFieldStream.create_field(h, w, cs)
-for _, chunk in ipairs(field) do
+for _, chunk in ipairs(field) do -- _ is index
 	print(chunk.data.vec, " ")
 end

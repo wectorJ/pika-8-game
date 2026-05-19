@@ -70,7 +70,7 @@ end
 ----------------------------------------------------------------------------------------------------
 
 function Vec2:__tostring()
-    return string.format("Vec2(%.2f, %.2f)", self.x, self.y)
+    return string.format("Vec2(%.2f, %.2f)", self.x, self.y) --TODO maybe only (x, y) without Vec2 prefix?
 end
 
 ----------------------------------------------------------------------------------------------------
