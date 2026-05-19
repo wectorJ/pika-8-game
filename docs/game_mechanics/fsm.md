@@ -122,9 +122,3 @@ Idle --> Chase : aggro_dist < 200
 Attack --> Chase : aggro_dist < 200
 Attack --> Death : hp < 0
 ```
-
-```mermaid
-flowchart TD
-    A[[README.md]] --> B[[Deque.md]]
-    click B "https://example.com"
-```

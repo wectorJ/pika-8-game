@@ -4,7 +4,7 @@ local ChaseState = require("scripts._src.enemy.flying_enemies.flying_a.states.ch
 local StunnedState = require("scripts._src.enemy.flying_enemies.flying_a.states.stunned")
 local DeathState = require("scripts._src.enemy.flying_enemies.flying_a.states.death")
 local PatrolState = require("scripts._src.enemy.flying_enemies.flying_a.states.patrol")
-local State = require("scripts._src.enemy.flying_enemies.flying_a.states._state")
+local State = require("scripts._src.ai._state")
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 
 local Enemy = setmetatable({}, {__index = FlyingMob})

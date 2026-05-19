@@ -1,28 +1,29 @@
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local Chunker = require("scripts._src.ai.chunker")
 local EventBus = require("scripts.custom_libs.event_bus")
+local State = require("scripts._src.ai._state")
 
 local VectorFieldStream = {}
 
---BY_AI states should be created from a ready-made FSM interface
 local FieldStates = {
-	idle = {
-		name = "idle",
-		make_vec = function()
-			return Vec2:new(1, 1)
-		end
-	},
-	moving = {
-		name = "moving",
-		make_vec = function()
-			return Vec2:new(2, 2)
-		end
-	}
+	idle = State:new("idle"),
+	moving = State:new("moving")
 }
 
+function FieldStates.idle:make_vec()
+	return Vec2:new(1, 1)
+end
+
+function FieldStates.moving:make_vec()
+	return Vec2:new(2, 2)
+end
+
+--- Main stream
 local function stream(height, width, chunk_size, vec_provider)
 	local chunks = Chunker.create_chunks(height, width, chunk_size)
-	local get_vec = vec_provider or FieldStates.idle.make_vec
+	local get_vec = vec_provider or function()
+		return FieldStates.idle:make_vec()
+	end
 	return coroutine.create(function ()
 		for i = 1, #chunks do
 			local chunk = chunks[i]
@@ -47,7 +48,7 @@ function VectorFieldStream.create_stream(height, width, chunk_size)
 	end)
 
 	local co = stream(height, width, chunk_size, function()
-		return state.make_vec()
+		return state:make_vec()
 	end)
 
 	local function unsubscribe()
@@ -98,13 +99,15 @@ function VectorFieldStream.create_field(height, width, chunk_size)
 	return field
 end
 
-local h, w, cs = 100, 50, 10
+return VectorFieldStream
 
-local result, iters = VectorFieldStream.example(h, w, cs)
-print("Average vector length: " .. result)
-print("Iterations: " .. iters)
+-- local h, w, cs = 100, 50, 10
 
-local field = VectorFieldStream.create_field(h, w, cs)
-for _, chunk in ipairs(field) do -- _ is index
-	print(chunk.data.vec, " ")
-end
+-- local result, iters = VectorFieldStream.example(h, w, cs)
+-- print("Average vector length: " .. result)
+-- print("Iterations: " .. iters)
+
+-- local field = VectorFieldStream.create_field(h, w, cs)
+-- for _, chunk in ipairs(field) do -- _ is index
+-- 	print(chunk.data.vec, " ")
+-- end

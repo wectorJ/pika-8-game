@@ -1,4 +1,4 @@
-local State = require("scripts._src.enemy.flying_enemies.flying_a.states._state")
+local State = require("scripts._src.ai._state")
 local Collision = require("scripts.custom_libs.collisions")
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local OOP = require("scripts.custom_libs.oop")

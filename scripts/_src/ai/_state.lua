@@ -11,18 +11,19 @@ function State:new(name)
 end
 
 --- calling once when enemy enters this state
-function State:enter(enemy) end
+function State:enter(owner) end
 
 --- calling every frame
-function State:update(enemy, dt) end
+function State:update(owner, dt) end
 
 --- calling once when enemy enters this state
-function State:exit(enemy) end
+function State:exit(owner) end
 
 local FSM = {}
 FSM.__index = FSM
 
 --TODO 2 new() methods?
+--BRAINFUCK the role of the FSM architecture needs to be clarified
 
 --- Class constructor
 --- @param owner table state owner
