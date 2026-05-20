@@ -1,21 +1,21 @@
 --BY_AI
 
-local EventBus = {
-    _listeners = {}
+local EventEmitter = {
+    _listeners = {} -- {"event_name": [list of handlers], ...}
 }
 
-function EventBus.on(event_name, handler)
+function EventEmitter.on(event_name, handler)
     if type(event_name) ~= "string" then
-        error("EventBus.on expects event_name string")
+        error("EventEmitter.on expects event_name string")
     end
     if type(handler) ~= "function" then
-        error("EventBus.on expects handler function")
+        error("EventEmitter.on expects handler function")
     end
 
-    local list = EventBus._listeners[event_name]
+    local list = EventEmitter._listeners[event_name]
     if not list then
         list = {}
-        EventBus._listeners[event_name] = list
+        EventEmitter._listeners[event_name] = list
     end
 
     table.insert(list, handler)
@@ -26,12 +26,12 @@ function EventBus.on(event_name, handler)
             return
         end
         removed = true
-        EventBus.off(event_name, handler)
+        EventEmitter.off(event_name, handler)
     end
 end
 
-function EventBus.off(event_name, handler)
-    local list = EventBus._listeners[event_name]
+function EventEmitter.off(event_name, handler)
+    local list = EventEmitter._listeners[event_name]
     if not list then
         return
     end
@@ -44,12 +44,12 @@ function EventBus.off(event_name, handler)
     end
 
     if #list == 0 then
-        EventBus._listeners[event_name] = nil
+        EventEmitter._listeners[event_name] = nil
     end
 end
 
-function EventBus.emit(event_name, payload)
-    local list = EventBus._listeners[event_name]
+function EventEmitter.emit(event_name, payload)
+    local list = EventEmitter._listeners[event_name]
     if not list then
         return 0
     end
@@ -62,11 +62,11 @@ function EventBus.emit(event_name, payload)
     for i = 1, #snapshot do
         local ok, err = pcall(snapshot[i], payload)
         if not ok then
-            print("[EventBus] handler error: " .. tostring(err))
+            print("[EventEmitter] handler error: " .. tostring(err))
         end
     end
 
     return #snapshot
 end
 
-return EventBus
+return EventEmitter

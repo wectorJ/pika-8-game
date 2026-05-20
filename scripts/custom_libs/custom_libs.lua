@@ -4,5 +4,5 @@ return {
     Enemy = require("scripts._src.enemy.flying_enemies.flying_a.enemy"),
     EnemySpawner = require("scripts._src.enemy.enemy_spawner"),
     JsonReader = require("scripts.custom_libs.json_reader"),
-    EventBus = require("scripts.custom_libs.event_bus"),
+    EventEmitter = require("scripts.custom_libs.event_emitter"),
 }

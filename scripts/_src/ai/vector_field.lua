@@ -1,10 +1,12 @@
 local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local Chunker = require("scripts._src.ai.chunker")
-local EventBus = require("scripts.custom_libs.event_bus")
+local EventEmitter = require("scripts.custom_libs.event_emitter")
 local State = require("scripts._src.ai._state")
 
 local VectorFieldStream = {}
 
+--TODO separate states into separate files, try to use a ready-made FSM
+--#region StateMachine
 local FieldStates = {
 	idle = State:new("idle"),
 	moving = State:new("moving")
@@ -17,6 +19,7 @@ end
 function FieldStates.moving:make_vec()
 	return Vec2:new(2, 2)
 end
+--#endregion
 
 --- Main stream
 local function stream(height, width, chunk_size, vec_provider)
@@ -40,10 +43,10 @@ function VectorFieldStream.create_stream(height, width, chunk_size)
 		state = next_state
 	end
 
-	local unsubscribe_moving = EventBus.on("ship_moving", function()
+	local unsubscribe_moving = EventEmitter.on("ship_moving", function()
 		set_state(FieldStates.moving)
 	end)
-	local unsubscribe_stopped = EventBus.on("ship_stopped", function()
+	local unsubscribe_stopped = EventEmitter.on("ship_stopped", function()
 		set_state(FieldStates.idle)
 	end)
 
