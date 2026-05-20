@@ -115,10 +115,10 @@ function _update(delta)
     --BY_AI ship "move" if player is moving
     local is_moving = dir:length_sq() > 0
     if is_moving and not ship_is_moving then
-        EventEmitter.emit("ship_moving", { pos = player_pos:copy() })
+        EventEmitter:emit("ship_moving", { pos = player_pos:copy() })
         print("ship_moving")
     elseif not is_moving and ship_is_moving then
-        EventEmitter.emit("ship_stopped", { pos = player_pos:copy() })
+        EventEmitter:emit("ship_stopped", { pos = player_pos:copy() })
         print("ship_stopped")
     end
     ship_is_moving = is_moving

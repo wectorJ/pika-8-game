@@ -1,10 +1,8 @@
---BY_AI
-
 local EventEmitter = {
-    _listeners = {} -- {"event_name": [list of handlers], ...}
+    _listeners = {}
 }
 
-function EventEmitter.on(event_name, handler)
+function EventEmitter:on(event_name, handler)
     if type(event_name) ~= "string" then
         error("EventEmitter.on expects event_name string")
     end
@@ -12,10 +10,10 @@ function EventEmitter.on(event_name, handler)
         error("EventEmitter.on expects handler function")
     end
 
-    local list = EventEmitter._listeners[event_name]
+    local list = self._listeners[event_name]
     if not list then
         list = {}
-        EventEmitter._listeners[event_name] = list
+        self._listeners[event_name] = list
     end
 
     table.insert(list, handler)
@@ -26,12 +24,12 @@ function EventEmitter.on(event_name, handler)
             return
         end
         removed = true
-        EventEmitter.off(event_name, handler)
+        self:off(event_name, handler)
     end
 end
 
-function EventEmitter.off(event_name, handler)
-    local list = EventEmitter._listeners[event_name]
+function EventEmitter:off(event_name, handler)
+    local list = self._listeners[event_name]
     if not list then
         return
     end
@@ -44,12 +42,12 @@ function EventEmitter.off(event_name, handler)
     end
 
     if #list == 0 then
-        EventEmitter._listeners[event_name] = nil
+        self._listeners[event_name] = nil
     end
 end
 
-function EventEmitter.emit(event_name, payload)
-    local list = EventEmitter._listeners[event_name]
+function EventEmitter:emit(event_name, payload)
+    local list = self._listeners[event_name]
     if not list then
         return 0
     end

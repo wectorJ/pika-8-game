@@ -43,10 +43,10 @@ function VectorFieldStream.create_stream(height, width, chunk_size)
 		state = next_state
 	end
 
-	local unsubscribe_moving = EventEmitter.on("ship_moving", function()
+	local unsubscribe_moving = EventEmitter:on("ship_moving", function()
 		set_state(FieldStates.moving)
 	end)
-	local unsubscribe_stopped = EventEmitter.on("ship_stopped", function()
+	local unsubscribe_stopped = EventEmitter:on("ship_stopped", function()
 		set_state(FieldStates.idle)
 	end)
 
