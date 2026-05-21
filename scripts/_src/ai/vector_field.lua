@@ -2,7 +2,7 @@ local Vec2 = require("scripts.custom_libs.abstract_types.vec2")
 local Chunker = require("scripts._src.ai.chunker")
 local EventEmitter = require("scripts.custom_libs.event_emitter")
 local EventProxy = require("scripts.custom_libs.event_proxy")
-local Logger = require("scripts.custom_libs.logger")
+local VFDecorators = require("scripts._src.ai.vector_field_D")
 local State = require("scripts._src.ai._state")
 
 local VectorFieldStream = {}
@@ -38,50 +38,29 @@ local function stream(height, width, chunk_size, vec_provider)
 	end)
 end
 
-local function create_stream_base(height, width, chunk_size, opts)
+local function create_stream(height, width, chunk_size, opts)
 	local options = opts or {}
 	local emitter = EventProxy.event_throttling(
 		EventEmitter,
 		options.event_min_interval_sec
 	)
 
-	local function wrap_handler(label, handler)
-		if type(options.wrap_handler) == "function" then
-			return options.wrap_handler(label, handler)
-		end
-		return handler
-	end
-
-	local function notify_state(next_state)
-		if type(options.on_state_change) == "function" then
-			options.on_state_change(next_state)
-		end
-	end
-
-	local function notify_vec(vec, state)
-		if type(options.on_vec) == "function" then
-			options.on_vec(vec, state)
-		end
-	end
-
 	local state = FieldStates.idle
 	local function set_state(next_state)
 		if state ~= next_state then
 			state = next_state
-			notify_state(state)
 		end
 	end
 
-	local unsubscribe_moving = emitter:on("ship_moving", wrap_handler("ship_moving", function()
+	local unsubscribe_moving = emitter:on("ship_moving", function()
 		set_state(FieldStates.moving)
-	end))
-	local unsubscribe_stopped = emitter:on("ship_stopped", wrap_handler("ship_stopped", function()
+	end)
+	local unsubscribe_stopped = emitter:on("ship_stopped", function()
 		set_state(FieldStates.idle)
-	end))
+	end)
 
 	local co = stream(height, width, chunk_size, function()
 		local vec = state:make_vec()
-		notify_vec(vec, state)
 		return vec
 	end)
 
@@ -93,72 +72,18 @@ local function create_stream_base(height, width, chunk_size, opts)
 	return co, unsubscribe
 end
 
---BY_AI
-local function decorate_create_stream(create_stream_fn)
-	return function(height, width, chunk_size, opts)
-		local options = opts or {}
-		local logger = Logger:new({
-			level = options.log_level or "INFO",
-			tag = options.log_tag or "VectorFieldStream"
-		})
+local dtest = VFDecorators.log(VFDecorators.filter(create_stream, function(chunk)
+	return chunk.data.vec.x == 1
+end))
 
-		logger:info("create_stream")
+local co, u = dtest(100, 50, 10)
 
-		local decorated_opts = {}
-		for key, value in pairs(options) do
-			decorated_opts[key] = value
-		end
-
-		decorated_opts.wrap_handler = function(label, handler)
-			return logger:wrap_handler(label, handler)
-		end
-		decorated_opts.on_state_change = function(next_state)
-			logger:info("state=" .. (next_state.name or "unknown"))
-			if type(options.on_state_change) == "function" then
-				options.on_state_change(next_state)
-			end
-		end
-		decorated_opts.on_vec = function(vec, state)
-			local state_name = "unknown"
-			if state and state.name then
-				state_name = state.name
-			end
-			logger:debug("vec=" .. tostring(vec) .. " state=" .. state_name)
-			if type(options.on_vec) == "function" then
-				options.on_vec(vec, state)
-			end
-		end
-
-		local ok, co, unsubscribe = pcall(create_stream_fn, height, width, chunk_size, decorated_opts)
-		if not ok then
-			logger:error("create_stream failed: " .. tostring(co))
-			return nil, function() end
-		end
-
-		local function safe_unsubscribe()
-			local ok_unsub, err = pcall(unsubscribe)
-			if not ok_unsub then
-				logger:error("unsubscribe error: " .. tostring(err))
-			else
-				logger:info("unsubscribed")
-			end
-		end
-
-		return co, safe_unsubscribe
-	end
+while coroutine.status(co) ~= "dead" do
+    local ok, chunk = coroutine.resume(co)
+    if not ok then error(chunk) end
 end
 
-local create_stream_with_logging = decorate_create_stream(create_stream_base)
-
---- Create a TEST vector field stream that changes based on ship movement events
----@param height number - field height
----@param width number - field width
----@param chunk_size number - size of chunks to divide the field into
----@param opts table - options for logging and event throttling
----@return thread co, function unsubscribe - the stream coroutine and an unsubscribe function to clean up event listeners
-function VectorFieldStream.create_stream(height, width, chunk_size, opts)
-	return create_stream_with_logging(height, width, chunk_size, opts)
-end
+u()
 
 function VectorFieldStream.example(height, width, chunk_size)
 	local iters = 0

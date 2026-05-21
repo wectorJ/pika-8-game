@@ -52,19 +52,14 @@ function EventEmitter:emit(event_name, payload)
         return 0
     end
 
-    local snapshot = {}
     for i = 1, #list do
-        snapshot[i] = list[i]
-    end
-
-    for i = 1, #snapshot do
-        local ok, err = pcall(snapshot[i], payload)
+        local ok, err = pcall(list[i], payload)
         if not ok then
             print("[EventEmitter] handler error: " .. tostring(err))
         end
     end
 
-    return #snapshot
+    return #list
 end
 
 return EventEmitter
